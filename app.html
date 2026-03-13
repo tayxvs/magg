@@ -645,8 +645,39 @@
 
         <section class="page" data-page="settings">
           <h1 class="page-title">Настройки</h1>
-          <div class="card card-pad">
-            <p class="muted">Страница настроек.</p>
+          <div class="grid">
+            <div class="card card-pad">
+              <h2 class="card-title">Параметры приложения</h2>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="themeSelect">Тема</label>
+                  <select id="themeSelect">
+                    <option>Светлая</option>
+                    <option>Тёмная</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="methodSelect">Метод по умолчанию</label>
+                  <select id="methodSelect">
+                    <option>FEM</option>
+                    <option>NN</option>
+                    <option>Комбо</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="actions" style="margin-top:16px;">
+                <button class="btn-primary" id="btnSaveSettings">Сохранить</button>
+              </div>
+            </div>
+
+            <aside class="card card-pad">
+              <h2 class="card-title">Текущие настройки</h2>
+              <div class="kv">
+                <div><p class="k">Тема</p><p class="v" id="settingsThemeValue">Светлая</p></div>
+                <div><p class="k">Метод</p><p class="v" id="settingsMethodValue">FEM</p></div>
+              </div>
+            </aside>
           </div>
         </section>
       </main>
@@ -727,6 +758,26 @@
       updateTaskSummary();
     });
 
+    const themeSelect = document.getElementById("themeSelect");
+    const methodSelect = document.getElementById("methodSelect");
+    const settingsThemeValue = document.getElementById("settingsThemeValue");
+    const settingsMethodValue = document.getElementById("settingsMethodValue");
+
+    function updateSettingsSummary() {
+      settingsThemeValue.textContent = themeSelect.value;
+      settingsMethodValue.textContent = methodSelect.value;
+    }
+
+    [themeSelect, methodSelect].forEach(el => {
+      el?.addEventListener("input", updateSettingsSummary);
+      el?.addEventListener("change", updateSettingsSummary);
+    });
+
+    on("#btnSaveSettings", () => {
+      updateSettingsSummary();
+      alert("Настройки сохранены");
+    });
+
     const helpBtn = document.getElementById("helpBtn");
     const helpModal = document.getElementById("helpModal");
     const closeHelpBtn = document.getElementById("closeHelpBtn");
@@ -747,6 +798,7 @@
     });
 
     updateTaskSummary();
+    updateSettingsSummary();
   </script>
 </body>
 </html>
