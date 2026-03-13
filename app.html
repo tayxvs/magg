@@ -37,7 +37,6 @@
       flex-direction:column;
     }
 
-    /* Top bar */
     .topbar{
       height:64px;
       background:var(--top);
@@ -58,14 +57,12 @@
       white-space:nowrap;
     }
 
-    /* Main layout */
     .main{
       flex:1;
       display:flex;
       min-height:0;
     }
 
-    /* Sidebar */
     .sidebar{
       width:300px;
       background:var(--side);
@@ -106,7 +103,6 @@
       opacity:.8;
     }
 
-    /* Content */
     .content{
       flex:1;
       padding:24px;
@@ -127,7 +123,6 @@
       margin-bottom:18px;
     }
 
-    /* Clickable controls */
     button, .btn{
       border:0;
       border-radius:12px;
@@ -149,7 +144,6 @@
     .btn-ghost{background:#e6ebf5; color:#1f2532;}
     .btn-ghost:hover{filter:brightness(.98)}
 
-    /* Grid blocks */
     .grid{
       display:grid;
       grid-template-columns: 1fr 380px;
@@ -181,7 +175,6 @@
     .tpl{
       padding:16px 18px;
       position:relative;
-
       overflow:hidden;
     }
     .tpl h3{
@@ -213,7 +206,6 @@
     }
     .tpl svg{opacity:.85}
 
-    /* Wizard */
     .wizard{
       padding:16px 18px;
     }
@@ -243,7 +235,6 @@
     .step-title{font-weight:800; font-size:14px; margin:0}
     .step-sub{font-size:12px; color:var(--muted); margin:2px 0 0 0}
 
-    /* Right summary */
     .kv{
       display:grid;
       grid-template-columns: 1fr;
@@ -270,7 +261,6 @@
     .v.ok{color:var(--ok)}
     .v.err{color:var(--err)}
 
-    /* Runs table */
     .runs{
       margin-top:18px;
       padding:16px 18px;
@@ -306,13 +296,47 @@
     .dot.ok{background:var(--ok)}
     .dot.err{background:var(--err)}
 
-    /* Responsive */
+    .page{display:none}
+    .page.active{display:block}
+
+    .form-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:16px;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .field label{
+      font-size:13px;
+      font-weight:700;
+      color:#2d3650;
+    }
+    .field input,
+    .field select{
+      width:100%;
+      padding:12px 14px;
+      border:2px solid var(--border);
+      border-radius:12px;
+      background:#fff;
+      font-size:14px;
+      color:var(--text);
+      outline:none;
+    }
+    .field input:focus,
+    .field select:focus{
+      border-color:var(--accent);
+    }
+
     @media (max-width: 1200px){
       .grid{grid-template-columns: 1fr}
       .templates{grid-template-columns: 1fr}
       .sidebar{width:260px}
+      .form-grid{grid-template-columns: 1fr}
     }
-    /* Modal styles */
+
     .modal {
       display: none;
       position: fixed;
@@ -322,7 +346,7 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+      background-color: rgba(0, 0, 0, 0.4);
     }
 
     .modal-content {
@@ -333,6 +357,7 @@
       width: 80%;
       max-width: 600px;
       border-radius: 12px;
+      position: relative;
     }
 
     .close-btn {
@@ -372,18 +397,12 @@
       </aside>
 
       <main class="content">
-        <h1 class="page-title">Расчет термоупругости</h1>
-        <div class="actions">
-          <button class="btn-primary" id="btnNew">Новый расчёт</button>
-          <button class="btn-ghost" id="btnOpen">Открыть проект</button>
-          <button class="btn-ghost" id="btnImport">Импорт mesh</button>
-        </div>
         <div id="helpModal" class="modal">
           <div class="modal-content">
             <span class="close-btn" id="closeHelpBtn">&times;</span>
             <h2>Руководство пользователя</h2>
             <p>Добро пожаловать в <strong>ThermoElasticity Studio</strong> - приложение для расчёта термоупругих свойств материалов. Это руководство поможет вам познакомиться с основными функциями и опциями нашего интерфейса.</p>
-            
+
             <h3>Основные функции:</h3>
             <ul>
               <li><strong>Проекты:</strong> Создание, управление и сохранение различных проектов расчётов. Вы можете легко создавать новые проекты или продолжать работу с уже существующими.</li>
@@ -397,7 +416,7 @@
             <p><strong>Шаблоны:</strong> Вы можете выбрать из различных шаблонов геометрии для моделирования. Доступны такие шаблоны, как "Куб", "Цилиндр" и другие.</p>
             <p><strong>Импорт:</strong> Возможность импортировать свою собственную геометрию в формате mesh для дальнейшего расчёта.</p>
             <p><strong>Режимы расчёта:</strong> Приложение поддерживает несколько режимов расчёта, включая точный метод (FEM) и быстрый метод (NN). Выбирайте наиболее подходящий в зависимости от задачи.</p>
-            
+
             <h3>Как использовать:</h3>
             <ol>
               <li>Для создания нового расчёта нажмите кнопку "Новый расчёт".</li>
@@ -405,118 +424,215 @@
               <li>Настройте все параметры задачи: материалы, граничные условия и режим расчёта.</li>
               <li>Запустите расчёт и просмотрите результаты.</li>
             </ol>
-            
+
             <p>Если у вас возникнут вопросы, не стесняйтесь обратиться к нам через раздел "Обратная связь" в меню настроек.</p>
           </div>
         </div>
-        <section class="grid">
-          <!-- Left column -->
-          <div>
-            <div class="templates">
-              <div class="card tpl">
-                <div class="icon" aria-hidden="true">
-                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
-                    <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" stroke="#4b5b86" stroke-width="1.8"/>
-                    <path d="M12 3v18" stroke="#4b5b86" stroke-width="1.2" opacity=".7"/>
-                    <path d="M4 7.5l8 4.5 8-4.5" stroke="#4b5b86" stroke-width="1.2" opacity=".7"/>
-                  </svg>
-                </div>
-                <h3>Шаблон: Куб</h3>
-                <div class="muted">неоднородность<br>Сетка: авто</div>
-                <button class="mini" data-template="cube">Создать</button>
-              </div>
 
-              <div class="card tpl">
-                <div class="icon" aria-hidden="true">
-                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
-                    <ellipse cx="12" cy="6" rx="6.5" ry="2.8" stroke="#4b5b86" stroke-width="1.8"/>
-                    <path d="M5.5 6v10.5c0 1.6 3 2.9 6.5 2.9s6.5-1.3 6.5-2.9V6" stroke="#4b5b86" stroke-width="1.8"/>
-                    <ellipse cx="12" cy="16.5" rx="6.5" ry="2.8" stroke="#4b5b86" stroke-width="1.2" opacity=".7"/>
-                  </svg>
-                </div>
-                <h3>Шаблон: Цилиндр</h3>
-                <div class="muted">Теплопроводность<br>Сетка: авто</div>
-                <button class="mini" data-template="cylinder">Создать</button>
-              </div>
-
-              <div class="card tpl">
-                <div class="icon" aria-hidden="true">
-                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
-                    <path d="M4 8.5 12 4l8 4.5v10L12 22 4 18.5v-10Z" stroke="#4b5b86" stroke-width="1.8"/>
-                    <path d="M12 10v7" stroke="#4b5b86" stroke-width="1.8"/>
-                    <path d="M9.5 14.5 12 17l2.5-2.5" stroke="#4b5b86" stroke-width="1.8"/>
-                  </svg>
-                </div>
-                <h3>Шаблон: Импорт</h3>
-                <div class="muted">произвольная геометрия<br>Проверка качества сетки</div>
-                <button class="mini" data-template="import">Выбрать</button>
-              </div>
-            </div>
-
-            <div class="card wizard">
-              <h2 class="card-title">Настройки</h2>
-              <div class="steps">
-                <div class="step"><div class="pill">1</div><div><p class="step-title">Геометрия и сетка</p><p class="step-sub">выбор шаблона / импорт; параметры gmsh</p></div></div>
-                <div class="step"><div class="pill">2</div><div><p class="step-title">Неоднородность</p><p class="step-sub">материалы по зонам; карта коэффициентов</p></div></div>
-                <div class="step"><div class="pill">3</div><div><p class="step-title">Граничные условия</p><p class="step-sub">нагрев/конвекция; нагрузки; закрепления</p></div></div>
-                <div class="step"><div class="pill">4</div><div><p class="step-title">Режим расчёта</p><p class="step-sub">Точный (FEM) / Быстрый (NN) / Комбо</p></div></div>
-                <div class="step"><div class="pill">5</div><div><p class="step-title">Запуск</p><p class="step-sub">локально или кластер (MPI)</p></div></div>
-                <div class="step"><div class="pill">6</div><div><p class="step-title">Результаты</p><p class="step-sub">поля, графики, метрики; экспорт отчёта</p></div></div>
-              </div>
-            </div>
-            <div class="card runs">
-              <h2 class="card-title">История</h2>
-              <table aria-label="История">
-                <thead>
-                  <tr>
-                    <th>Дата/время</th>
-                    <th>Геометрия</th>
-                    <th>Режим</th>
-                    <th>max(σ)</th>
-                    <th>Итерации</th>
-                    <th>Время</th>
-                    <th>Статус</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>2026-02-05 19:12</td><td>Куб</td><td>FEM</td><td>312 МПа</td><td>820</td><td>38 с</td>
-                    <td><span class="dot ok"></span>OK</td>
-                  </tr>
-                  <tr>
-                    <td>2026-02-05 19:05</td><td>Куб</td><td>NN (черновик)</td><td>305 МПа</td><td>—</td><td>0.4 с</td>
-                    <td><span class="dot ok"></span>OK</td>
-                  </tr>
-                  <tr>
-                    <td>2026-02-05 18:58</td><td>Цил.</td><td>Комбо</td><td>280 МПа</td><td>640</td><td>24 с</td>
-                    <td><span class="dot ok"></span>OK</td>
-                  </tr>
-                  <tr>
-                    <td>2026-02-05 18:40</td><td>Импорт</td><td>FEM</td><td>—</td><td>—</td><td>—</td>
-                    <td><span class="dot err"></span>Ошибка</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+        <section class="page active" data-page="projects">
+          <h1 class="page-title">Расчет термоупругости</h1>
+          <div class="actions">
+            <button class="btn-primary" id="btnNew">Новый расчёт</button>
+            <button class="btn-ghost" id="btnOpen">Открыть проект</button>
+            <button class="btn-ghost" id="btnImport">Импорт mesh</button>
           </div>
 
-          <!-- Right column -->
-          <aside class="card card-pad" aria-label="Сводка проекта">
-            <h2 class="card-title">О проекте</h2>
+          <section class="grid">
+            <div>
+              <div class="templates">
+                <div class="card tpl">
+                  <div class="icon" aria-hidden="true">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                      <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" stroke="#4b5b86" stroke-width="1.8"/>
+                      <path d="M12 3v18" stroke="#4b5b86" stroke-width="1.2" opacity=".7"/>
+                      <path d="M4 7.5l8 4.5 8-4.5" stroke="#4b5b86" stroke-width="1.2" opacity=".7"/>
+                    </svg>
+                  </div>
+                  <h3>Шаблон: Куб</h3>
+                  <div class="muted">неоднородность<br>Сетка: авто</div>
+                  <button class="mini" data-template="cube">Создать</button>
+                </div>
 
-            <div class="kv">
-              <div><p class="k">Проект</p><p class="v">Куб • неоднородность</p></div>
-              <div><p class="k">Режим</p><p class="v">Комбо: NN → FEM</p></div>
-              <div><p class="k">Решатель</p><p class="v">GMRES + AMG</p></div>
-              <div><p class="k">Куда считать</p><p class="v">Кластер (MPI, 8 процессов)</p></div>
-              <div><p class="k">Экспорт</p><p class="v">VTK • CSV • PDF-отчёт</p></div>
+                <div class="card tpl">
+                  <div class="icon" aria-hidden="true">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                      <ellipse cx="12" cy="6" rx="6.5" ry="2.8" stroke="#4b5b86" stroke-width="1.8"/>
+                      <path d="M5.5 6v10.5c0 1.6 3 2.9 6.5 2.9s6.5-1.3 6.5-2.9V6" stroke="#4b5b86" stroke-width="1.8"/>
+                      <ellipse cx="12" cy="16.5" rx="6.5" ry="2.8" stroke="#4b5b86" stroke-width="1.2" opacity=".7"/>
+                    </svg>
+                  </div>
+                  <h3>Шаблон: Цилиндр</h3>
+                  <div class="muted">Теплопроводность<br>Сетка: авто</div>
+                  <button class="mini" data-template="cylinder">Создать</button>
+                </div>
+
+                <div class="card tpl">
+                  <div class="icon" aria-hidden="true">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                      <path d="M4 8.5 12 4l8 4.5v10L12 22 4 18.5v-10Z" stroke="#4b5b86" stroke-width="1.8"/>
+                      <path d="M12 10v7" stroke="#4b5b86" stroke-width="1.8"/>
+                      <path d="M9.5 14.5 12 17l2.5-2.5" stroke="#4b5b86" stroke-width="1.8"/>
+                    </svg>
+                  </div>
+                  <h3>Шаблон: Импорт</h3>
+                  <div class="muted">произвольная геометрия<br>Проверка качества сетки</div>
+                  <button class="mini" data-template="import">Выбрать</button>
+                </div>
+              </div>
+
+              <div class="card wizard">
+                <h2 class="card-title">Настройки</h2>
+                <div class="steps">
+                  <div class="step"><div class="pill">1</div><div><p class="step-title">Геометрия и сетка</p><p class="step-sub">выбор шаблона / импорт; параметры gmsh</p></div></div>
+                  <div class="step"><div class="pill">2</div><div><p class="step-title">Неоднородность</p><p class="step-sub">материалы по зонам; карта коэффициентов</p></div></div>
+                  <div class="step"><div class="pill">3</div><div><p class="step-title">Граничные условия</p><p class="step-sub">нагрев/конвекция; нагрузки; закрепления</p></div></div>
+                  <div class="step"><div class="pill">4</div><div><p class="step-title">Режим расчёта</p><p class="step-sub">Точный (FEM) / Быстрый (NN) / Комбо</p></div></div>
+                  <div class="step"><div class="pill">5</div><div><p class="step-title">Запуск</p><p class="step-sub">локально или кластер (MPI)</p></div></div>
+                  <div class="step"><div class="pill">6</div><div><p class="step-title">Результаты</p><p class="step-sub">поля, графики, метрики; экспорт отчёта</p></div></div>
+                </div>
+              </div>
+
+              <div class="card runs">
+                <h2 class="card-title">История</h2>
+                <table aria-label="История">
+                  <thead>
+                    <tr>
+                      <th>Дата/время</th>
+                      <th>Геометрия</th>
+                      <th>Режим</th>
+                      <th>max(σ)</th>
+                      <th>Итерации</th>
+                      <th>Время</th>
+                      <th>Статус</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>2026-02-05 19:12</td><td>Куб</td><td>FEM</td><td>312 МПа</td><td>820</td><td>38 с</td>
+                      <td><span class="dot ok"></span>OK</td>
+                    </tr>
+                    <tr>
+                      <td>2026-02-05 19:05</td><td>Куб</td><td>NN (черновик)</td><td>305 МПа</td><td>—</td><td>0.4 с</td>
+                      <td><span class="dot ok"></span>OK</td>
+                    </tr>
+                    <tr>
+                      <td>2026-02-05 18:58</td><td>Цил.</td><td>Комбо</td><td>280 МПа</td><td>640</td><td>24 с</td>
+                      <td><span class="dot ok"></span>OK</td>
+                    </tr>
+                    <tr>
+                      <td>2026-02-05 18:40</td><td>Импорт</td><td>FEM</td><td>—</td><td>—</td><td>—</td>
+                      <td><span class="dot err"></span>Ошибка</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
-            <div class="stats">
-              <div class="stat"><p class="k">Последний запуск</p><p class="v ok">Успешно</p></div>
-              <div class="stat"><p class="k">Очередь кластера</p><p class="v ok">Свободно</p></div>
+            <aside class="card card-pad" aria-label="Сводка проекта">
+              <h2 class="card-title">О проекте</h2>
+
+              <div class="kv">
+                <div><p class="k">Проект</p><p class="v">Куб • неоднородность</p></div>
+                <div><p class="k">Режим</p><p class="v">Комбо: NN → FEM</p></div>
+                <div><p class="k">Решатель</p><p class="v">GMRES + AMG</p></div>
+                <div><p class="k">Куда считать</p><p class="v">Кластер (MPI, 8 процессов)</p></div>
+                <div><p class="k">Экспорт</p><p class="v">VTK • CSV • PDF-отчёт</p></div>
+              </div>
+
+              <div class="stats">
+                <div class="stat"><p class="k">Последний запуск</p><p class="v ok">Успешно</p></div>
+                <div class="stat"><p class="k">Очередь кластера</p><p class="v ok">Свободно</p></div>
+              </div>
+            </aside>
+          </section>
+        </section>
+
+        <section class="page" data-page="builder">
+          <h1 class="page-title">Конструктор задачи</h1>
+          <div class="grid">
+            <div class="card card-pad">
+              <h2 class="card-title">Параметры задачи</h2>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="geometry">Геометрия</label>
+                  <select id="geometry">
+                    <option>Куб</option>
+                    <option>Цилиндр</option>
+                    <option>Импорт mesh</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="meshSize">Размер сетки</label>
+                  <input id="meshSize" type="number" value="0.5" step="0.1" />
+                </div>
+                <div class="field">
+                  <label for="material">Материал</label>
+                  <select id="material">
+                    <option>Сталь</option>
+                    <option>Алюминий</option>
+                    <option>Композит</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="temperature">Температура, °C</label>
+                  <input id="temperature" type="number" value="120" />
+                </div>
+                <div class="field">
+                  <label for="fixation">Закрепление</label>
+                  <select id="fixation">
+                    <option>Слева</option>
+                    <option>Справа</option>
+                    <option>По контуру</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="solverMode">Режим расчёта</label>
+                  <select id="solverMode">
+                    <option>FEM</option>
+                    <option>NN</option>
+                    <option>Комбо</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="actions" style="margin-top:16px;">
+                <button class="btn-primary" id="btnBuildTask">Собрать задачу</button>
+                <button class="btn-ghost" id="btnResetTask">Сбросить</button>
+              </div>
             </div>
-          </aside>
+
+            <aside class="card card-pad">
+              <h2 class="card-title">Сводка</h2>
+              <div class="kv">
+                <div><p class="k">Геометрия</p><p class="v" id="summaryGeometry">Куб</p></div>
+                <div><p class="k">Сетка</p><p class="v" id="summaryMesh">0.5</p></div>
+                <div><p class="k">Материал</p><p class="v" id="summaryMaterial">Сталь</p></div>
+                <div><p class="k">Температура</p><p class="v" id="summaryTemperature">120 °C</p></div>
+                <div><p class="k">Режим</p><p class="v" id="summaryMode">FEM</p></div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="page" data-page="run">
+          <h1 class="page-title">Запуск расчёта</h1>
+          <div class="card card-pad">
+            <p class="muted">Страница запуска расчёта.</p>
+          </div>
+        </section>
+
+        <section class="page" data-page="results">
+          <h1 class="page-title">Результаты</h1>
+          <div class="card card-pad">
+            <p class="muted">Страница результатов.</p>
+          </div>
+        </section>
+
+        <section class="page" data-page="settings">
+          <h1 class="page-title">Настройки</h1>
+          <div class="card card-pad">
+            <p class="muted">Страница настроек.</p>
+          </div>
         </section>
       </main>
     </div>
@@ -537,33 +653,84 @@
       });
     });
 
-    // document.querySelectorAll("[data-nav]").forEach(link => {
-    //   link.addEventListener("click", (e) => {
-    //     e.preventDefault();
-    //     const page = link.getAttribute("data-nav");
-    //     console.log("Навигация:", page);
-    //     alert("Навигация: " + page);
-    //   });
-    // });
-    // Modal functionality
+    const navLinks = document.querySelectorAll("[data-nav]");
+    const pages = document.querySelectorAll(".page");
+
+    navLinks.forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        const page = link.getAttribute("data-nav");
+        if (page === "help") return;
+
+        navLinks.forEach(item => item.classList.remove("active"));
+        link.classList.add("active");
+
+        pages.forEach(section => {
+          section.classList.toggle("active", section.dataset.page === page);
+        });
+      });
+    });
+
+    const geometry = document.getElementById("geometry");
+    const meshSize = document.getElementById("meshSize");
+    const material = document.getElementById("material");
+    const temperature = document.getElementById("temperature");
+    const solverMode = document.getElementById("solverMode");
+
+    const summaryGeometry = document.getElementById("summaryGeometry");
+    const summaryMesh = document.getElementById("summaryMesh");
+    const summaryMaterial = document.getElementById("summaryMaterial");
+    const summaryTemperature = document.getElementById("summaryTemperature");
+    const summaryMode = document.getElementById("summaryMode");
+
+    function updateTaskSummary() {
+      summaryGeometry.textContent = geometry.value;
+      summaryMesh.textContent = meshSize.value;
+      summaryMaterial.textContent = material.value;
+      summaryTemperature.textContent = temperature.value + " °C";
+      summaryMode.textContent = solverMode.value;
+    }
+
+    [geometry, meshSize, material, temperature, solverMode].forEach(el => {
+      el?.addEventListener("input", updateTaskSummary);
+      el?.addEventListener("change", updateTaskSummary);
+    });
+
+    on("#btnBuildTask", () => {
+      updateTaskSummary();
+      alert("Задача собрана");
+    });
+
+    on("#btnResetTask", () => {
+      geometry.value = "Куб";
+      meshSize.value = "0.5";
+      material.value = "Сталь";
+      temperature.value = "120";
+      solverMode.value = "FEM";
+      updateTaskSummary();
+    });
+
     const helpBtn = document.getElementById("helpBtn");
     const helpModal = document.getElementById("helpModal");
     const closeHelpBtn = document.getElementById("closeHelpBtn");
 
-    helpBtn.addEventListener("click", () => {
-      helpModal.style.display = "block"; // Show modal
+    helpBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      helpModal.style.display = "block";
     });
 
     closeHelpBtn.addEventListener("click", () => {
-      helpModal.style.display = "none"; // Close modal
+      helpModal.style.display = "none";
     });
 
-    // Close the modal if the user clicks outside of it
     window.addEventListener("click", (event) => {
       if (event.target === helpModal) {
         helpModal.style.display = "none";
       }
     });
+
+    updateTaskSummary();
   </script>
 </body>
 </html>
