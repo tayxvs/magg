@@ -389,7 +389,6 @@
         <nav class="nav" aria-label="Навигация">
           <a class="active" href="#" data-nav="projects">Проекты</a>
           <a href="#" data-nav="builder">Конструктор задачи</a>
-          <a href="#" data-nav="run">Запуск расчёта</a>
           <a href="#" data-nav="results">Результаты</a>
           <a href="#" data-nav="settings">Настройки</a>
           <a href="#" data-nav="help" id="helpBtn">Справка</a>
@@ -407,7 +406,6 @@
             <ul>
               <li><strong>Проекты:</strong> Создание, управление и сохранение различных проектов расчётов. Вы можете легко создавать новые проекты или продолжать работу с уже существующими.</li>
               <li><strong>Конструктор задачи:</strong> Используйте конструктор для создания модели задачи, выбора геометрии и сетки, а также настройки всех параметров для расчёта.</li>
-              <li><strong>Запуск расчёта:</strong> После настройки задачи, запустите расчёт с использованием различных методов, включая точный FEM и быстрый NN.</li>
               <li><strong>Результаты:</strong> После выполнения расчёта, просматривайте результаты, анализируйте графики и метрики. Экспортируйте отчёты в различные форматы, такие как CSV или PDF.</li>
               <li><strong>Настройки:</strong> Настройка интерфейса приложения и предпочтений, таких как параметры сети и методы расчёта.</li>
             </ul>
@@ -422,7 +420,7 @@
               <li>Для создания нового расчёта нажмите кнопку "Новый расчёт".</li>
               <li>Выберите шаблон или импортируйте собственную геометрию.</li>
               <li>Настройте все параметры задачи: материалы, граничные условия и режим расчёта.</li>
-              <li>Запустите расчёт и просмотрите результаты.</li>
+              <li>Просмотрите результаты.</li>
             </ol>
 
             <p>Если у вас возникнут вопросы, не стесняйтесь обратиться к нам через раздел "Обратная связь" в меню настроек.</p>
@@ -487,8 +485,7 @@
                   <div class="step"><div class="pill">2</div><div><p class="step-title">Неоднородность</p><p class="step-sub">материалы по зонам; карта коэффициентов</p></div></div>
                   <div class="step"><div class="pill">3</div><div><p class="step-title">Граничные условия</p><p class="step-sub">нагрев/конвекция; нагрузки; закрепления</p></div></div>
                   <div class="step"><div class="pill">4</div><div><p class="step-title">Режим расчёта</p><p class="step-sub">Точный (FEM) / Быстрый (NN) / Комбо</p></div></div>
-                  <div class="step"><div class="pill">5</div><div><p class="step-title">Запуск</p><p class="step-sub">локально или кластер (MPI)</p></div></div>
-                  <div class="step"><div class="pill">6</div><div><p class="step-title">Результаты</p><p class="step-sub">поля, графики, метрики; экспорт отчёта</p></div></div>
+                  <div class="step"><div class="pill">5</div><div><p class="step-title">Результаты</p><p class="step-sub">поля, графики, метрики; экспорт отчёта</p></div></div>
                 </div>
               </div>
 
@@ -614,17 +611,35 @@
           </div>
         </section>
 
-        <section class="page" data-page="run">
-          <h1 class="page-title">Запуск расчёта</h1>
-          <div class="card card-pad">
-            <p class="muted">Страница запуска расчёта.</p>
-          </div>
-        </section>
-
         <section class="page" data-page="results">
           <h1 class="page-title">Результаты</h1>
-          <div class="card card-pad">
-            <p class="muted">Страница результатов.</p>
+          <div class="grid">
+            <div class="card card-pad">
+              <h2 class="card-title">Итоги расчёта</h2>
+              <table aria-label="Результаты">
+                <tbody>
+                  <tr>
+                    <td>max(σ)</td>
+                    <td>312 МПа</td>
+                  </tr>
+                  <tr>
+                    <td>max(T)</td>
+                    <td>120 °C</td>
+                  </tr>
+                  <tr>
+                    <td>Перемещение</td>
+                    <td>0.18 мм</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <aside class="card card-pad">
+              <h2 class="card-title">Экспорт</h2>
+              <div class="actions" style="margin-bottom:0;">
+                <button class="btn-primary" id="btnExport">Экспорт CSV</button>
+              </div>
+            </aside>
           </div>
         </section>
 
@@ -644,6 +659,7 @@
     on("#btnNew",   () => { console.log("Новый расчёт");  alert("Новый расчёт"); });
     on("#btnOpen",  () => { console.log("Открыть проект"); alert("Открыть проект"); });
     on("#btnImport",() => { console.log("Импорт mesh");     alert("Импорт mesh"); });
+    on("#btnExport",() => { console.log("Экспорт CSV");     alert("Экспорт CSV"); });
 
     document.querySelectorAll("[data-template]").forEach(btn => {
       btn.addEventListener("click", () => {
