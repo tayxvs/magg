@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ThermoElasticity Studio — Главный экран</title>
+  <style>
+    :root{
+      --bg:#f5f7fa;
+      --top:#1c2742;
+      --side:#212d4e;
+      --sideActive:#2d3f6c;
+      --card:#ffffff;
+      --border:#dce1eb;
+      --text:#191f2a;
+      --muted:#6e788c;
+      --accent:#4a90e2;
+      --ok:#2ea043;
+      --err:#d64545;
+      --soft:#eef2f8;
+      --shadow: 0 8px 24px rgba(20, 25, 35, .08);
+      --radius:16px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:var(--bg);
+    }
+
+    .app{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* Top bar */
+    .topbar{
+      height:64px;
+      background:var(--top);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      padding:0 24px;
+      justify-content:space-between;
+    }
+    .brand{
+      font-weight:700;
+      letter-spacing:.2px;
+      font-size:20px;
+    }
+    .top-meta{
+      font-size:14px;
+      color:rgba(255,255,255,.82);
+      white-space:nowrap;
+    }
+
+    /* Main layout */
+    .main{
+      flex:1;
+      display:flex;
+      min-height:0;
+    }
+
+    /* Sidebar */
+    .sidebar{
+      width:300px;
+      background:var(--side);
+      color:#d8deea;
+      padding:18px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .nav{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      margin-top:6px;
+    }
+    .nav a{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:12px;
+      color:#d8deea;
+      text-decoration:none;
+      font-size:14px;
+      opacity:.95;
+      user-select:none;
+    }
+    .nav a:hover{background: rgba(255,255,255,.06)}
+    .nav a.active{
+      background:var(--sideActive);
+      color:#fff;
+      font-weight:600;
+    }
+    .side-footer{
+      margin-top:auto;
+      padding:12px 14px;
+      font-size:12px;
+      opacity:.8;
+    }
+
+    /* Content */
+    .content{
+      flex:1;
+      padding:24px;
+      min-width:0;
+      overflow:auto;
+    }
+
+    .page-title{
+      font-size:18px;
+      font-weight:700;
+      margin:0 0 14px 0;
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    /* Clickable controls */
+    button, .btn{
+      border:0;
+      border-radius:12px;
+      padding:12px 16px;
+      font-weight:600;
+      font-size:14px;
+      user-select:none;
+      cursor:pointer;
+      transition: transform .06s ease, filter .12s ease, opacity .12s ease;
+    }
+    button:active{transform: translateY(1px)}
+    button:focus-visible{
+      outline: 3px solid rgba(74,144,226,.35);
+      outline-offset: 2px;
+    }
+
+    .btn-primary{background:var(--accent); color:#fff;}
+    .btn-primary:hover{filter:brightness(.98)}
+    .btn-ghost{background:#e6ebf5; color:#1f2532;}
+    .btn-ghost:hover{filter:brightness(.98)}
+
+    /* Grid blocks */
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 380px;
+      gap:24px;
+      align-items:start;
+    }
+
+    .card{
+      background:var(--card);
+      border:2px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .card-pad{padding:16px 18px}
+    .card-title{
+      margin:0 0 10px 0;
+      font-size:16px;
+      font-weight:800;
+    }
+    .muted{color:var(--muted); font-size:14px; line-height:1.35}
+
+    .templates{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:16px;
+      margin-bottom:18px;
+    }
+
+    .tpl{
+      padding:16px 18px;
+      position:relative;
+
+      overflow:hidden;
+    }
+    .tpl h3{
+      margin:0 0 8px 0;
+      font-size:14px;
+      font-weight:800;
+    }
+    .tpl .mini{
+      margin-top:12px;
+      background:var(--soft);
+      border:2px solid var(--border);
+      border-radius:12px;
+      padding:8px 12px;
+      display:inline-block;
+      font-size:13px;
+      font-weight:700;
+      color:#2a3242;
+    }
+    .tpl .mini:hover{filter:brightness(.98)}
+    .tpl .icon{
+      position:absolute;
+      right:14px; top:14px;
+      width:56px; height:56px;
+      border-radius:14px;
+      border:2px solid var(--border);
+      background:linear-gradient(180deg,#ffffff, #f4f6fb);
+      display:grid;
+      place-items:center;
+    }
+    .tpl svg{opacity:.85}
+
+    /* Wizard */
+    .wizard{
+      padding:16px 18px;
+    }
+    .steps{
+      margin-top:12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .step{
+      display:grid;
+      grid-template-columns: 34px 1fr;
+      gap:12px;
+      align-items:center;
+    }
+    .pill{
+      width:34px; height:34px;
+      border-radius:12px;
+      background:var(--soft);
+      border:1px solid var(--border);
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      color:#2d3650;
+      font-size:13px;
+    }
+    .step-title{font-weight:800; font-size:14px; margin:0}
+    .step-sub{font-size:12px; color:var(--muted); margin:2px 0 0 0}
+
+    /* Right summary */
+    .kv{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:8px;
+    }
+    .kv .k{font-size:12px; color:var(--muted); margin:0}
+    .kv .v{font-size:14px; margin:2px 0 0 0; font-weight:650}
+
+    .stats{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:14px;
+    }
+    .stat{
+      background:linear-gradient(180deg,#fff, #f6f8fd);
+      border:2px solid var(--border);
+      border-radius:14px;
+      padding:12px 12px;
+    }
+    .stat .k{font-size:12px; color:var(--muted); margin:0}
+    .stat .v{font-size:16px; font-weight:900; margin:4px 0 0 0}
+    .v.ok{color:var(--ok)}
+    .v.err{color:var(--err)}
+
+    /* Runs table */
+    .runs{
+      margin-top:18px;
+      padding:16px 18px;
+    }
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0 10px;
+      font-size:14px;
+    }
+    thead th{
+      text-align:left;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:800;
+      padding:0 10px;
+    }
+    tbody tr{
+      background:linear-gradient(180deg,#fff, #fbfcff);
+    }
+    tbody td{
+      padding:10px 10px;
+    }
+    tbody tr td:first-child{border-top-left-radius:12px; border-bottom-left-radius:12px}
+    tbody tr td:last-child{border-top-right-radius:12px; border-bottom-right-radius:12px}
+    .dot{
+      display:inline-block;
+      width:10px; height:10px;
+      border-radius:50%;
+      margin-right:8px;
+      vertical-align:middle;
+    }
+    .dot.ok{background:var(--ok)}
+    .dot.err{background:var(--err)}
+
+    /* Responsive */
+    @media (max-width: 1200px){
+      .grid{grid-template-columns: 1fr}
+      .templates{grid-template-columns: 1fr}
+      .sidebar{width:260px}
+    }
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 12px;
+    }
+
+    .close-btn {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      position: absolute;
+      top: 0;
+      right: 10px;
+    }
+
+    .close-btn:hover,
+    .close-btn:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">ThermoElasticity Studio</div>
+    </header>
+
+    <div class="main">
+      <aside class="sidebar">
+        <nav class="nav" aria-label="Навигация">
+          <a class="active" href="#" data-nav="projects">Проекты</a>
+          <a href="#" data-nav="builder">Конструктор задачи</a>
+          <a href="#" data-nav="run">Запуск расчёта</a>
+          <a href="#" data-nav="results">Результаты</a>
+          <a href="#" data-nav="settings">Настройки</a>
+          <a href="#" data-nav="help" id="helpBtn">Справка</a>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <h1 class="page-title">Расчет термоупругости</h1>
+        <div class="actions">
+          <button class="btn-primary" id="btnNew">Новый расчёт</button>
+          <button class="btn-ghost" id="btnOpen">Открыть проект</button>
+          <button class="btn-ghost" id="btnImport">Импорт mesh</button>
+        </div>
+        <div id="helpModal" class="modal">
+          <div class="modal-content">
+            <span class="close-btn" id="closeHelpBtn">&times;</span>
+            <h2>Руководство пользователя</h2>
+            <p>Добро пожаловать в <strong>ThermoElasticity Studio</strong> - приложение для расчёта термоупругих свойств материалов. Это руководство поможет вам познакомиться с основными функциями и опциями нашего интерфейса.</p>
+            
+            <h3>Основные функции:</h3>
+            <ul>
+              <li><strong>Проекты:</strong> Создание, управление и сохранение различных проектов расчётов. Вы можете легко создавать новые проекты или продолжать работу с уже существующими.</li>
+              <li><strong>Конструктор задачи:</strong> Используйте конструктор для создания модели задачи, выбора геометрии и сетки, а также настройки всех параметров для расчёта.</li>
+              <li><strong>Запуск расчёта:</strong> После настройки задачи, запустите расчёт с использованием различных методов, включая точный FEM и быстрый NN.</li>
+              <li><strong>Результаты:</strong> После выполнения расчёта, просматривайте результаты, анализируйте графики и метрики. Экспортируйте отчёты в различные форматы, такие как CSV или PDF.</li>
+              <li><strong>Настройки:</strong> Настройка интерфейса приложения и предпочтений, таких как параметры сети и методы расчёта.</li>
+            </ul>
+
+            <h3>Опции:</h3>
+            <p><strong>Шаблоны:</strong> Вы можете выбрать из различных шаблонов геометрии для моделирования. Доступны такие шаблоны, как "Куб", "Цилиндр" и другие.</p>
+            <p><strong>Импорт:</strong> Возможность импортировать свою собственную геометрию в формате mesh для дальнейшего расчёта.</p>
+            <p><strong>Режимы расчёта:</strong> Приложение поддерживает несколько режимов расчёта, включая точный метод (FEM) и быстрый метод (NN). Выбирайте наиболее подходящий в зависимости от задачи.</p>
+            
+            <h3>Как использовать:</h3>
+            <ol>
+              <li>Для создания нового расчёта нажмите кнопку "Новый расчёт".</li>
+              <li>Выберите шаблон или импортируйте собственную геометрию.</li>
+              <li>Настройте все параметры задачи: материалы, граничные условия и режим расчёта.</li>
+              <li>Запустите расчёт и просмотрите результаты.</li>
+            </ol>
+            
+            <p>Если у вас возникнут вопросы, не стесняйтесь обратиться к нам через раздел "Обратная связь" в меню настроек.</p>
+          </div>
+        </div>
+        <section class="grid">
+          <!-- Left column -->
+          <div>
+            <div class="templates">
+              <div class="card tpl">
+                <div class="icon" aria-hidden="true">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" stroke="#4b5b86" stroke-width="1.8"/>
+                    <path d="M12 3v18" stroke="#4b5b86" stroke-width="1.2" opacity=".7"/>
+                    <path d="M4 7.5l8 4.5 8-4.5" stroke="#4b5b86" stroke-width="1.2" opacity=".7"/>
+                  </svg>
+                </div>
+                <h3>Шаблон: Куб</h3>
+                <div class="muted">неоднородность<br>Сетка: авто</div>
+                <button class="mini" data-template="cube">Создать</button>
+              </div>
+
+              <div class="card tpl">
+                <div class="icon" aria-hidden="true">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                    <ellipse cx="12" cy="6" rx="6.5" ry="2.8" stroke="#4b5b86" stroke-width="1.8"/>
+                    <path d="M5.5 6v10.5c0 1.6 3 2.9 6.5 2.9s6.5-1.3 6.5-2.9V6" stroke="#4b5b86" stroke-width="1.8"/>
+                    <ellipse cx="12" cy="16.5" rx="6.5" ry="2.8" stroke="#4b5b86" stroke-width="1.2" opacity=".7"/>
+                  </svg>
+                </div>
+                <h3>Шаблон: Цилиндр</h3>
+                <div class="muted">Теплопроводность<br>Сетка: авто</div>
+                <button class="mini" data-template="cylinder">Создать</button>
+              </div>
+
+              <div class="card tpl">
+                <div class="icon" aria-hidden="true">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 8.5 12 4l8 4.5v10L12 22 4 18.5v-10Z" stroke="#4b5b86" stroke-width="1.8"/>
+                    <path d="M12 10v7" stroke="#4b5b86" stroke-width="1.8"/>
+                    <path d="M9.5 14.5 12 17l2.5-2.5" stroke="#4b5b86" stroke-width="1.8"/>
+                  </svg>
+                </div>
+                <h3>Шаблон: Импорт</h3>
+                <div class="muted">произвольная геометрия<br>Проверка качества сетки</div>
+                <button class="mini" data-template="import">Выбрать</button>
+              </div>
+            </div>
+
+            <div class="card wizard">
+              <h2 class="card-title">Настройки</h2>
+              <div class="steps">
+                <div class="step"><div class="pill">1</div><div><p class="step-title">Геометрия и сетка</p><p class="step-sub">выбор шаблона / импорт; параметры gmsh</p></div></div>
+                <div class="step"><div class="pill">2</div><div><p class="step-title">Неоднородность</p><p class="step-sub">материалы по зонам; карта коэффициентов</p></div></div>
+                <div class="step"><div class="pill">3</div><div><p class="step-title">Граничные условия</p><p class="step-sub">нагрев/конвекция; нагрузки; закрепления</p></div></div>
+                <div class="step"><div class="pill">4</div><div><p class="step-title">Режим расчёта</p><p class="step-sub">Точный (FEM) / Быстрый (NN) / Комбо</p></div></div>
+                <div class="step"><div class="pill">5</div><div><p class="step-title">Запуск</p><p class="step-sub">локально или кластер (MPI)</p></div></div>
+                <div class="step"><div class="pill">6</div><div><p class="step-title">Результаты</p><p class="step-sub">поля, графики, метрики; экспорт отчёта</p></div></div>
+              </div>
+            </div>
+            <div class="card runs">
+              <h2 class="card-title">История</h2>
+              <table aria-label="История">
+                <thead>
+                  <tr>
+                    <th>Дата/время</th>
+                    <th>Геометрия</th>
+                    <th>Режим</th>
+                    <th>max(σ)</th>
+                    <th>Итерации</th>
+                    <th>Время</th>
+                    <th>Статус</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>2026-02-05 19:12</td><td>Куб</td><td>FEM</td><td>312 МПа</td><td>820</td><td>38 с</td>
+                    <td><span class="dot ok"></span>OK</td>
+                  </tr>
+                  <tr>
+                    <td>2026-02-05 19:05</td><td>Куб</td><td>NN (черновик)</td><td>305 МПа</td><td>—</td><td>0.4 с</td>
+                    <td><span class="dot ok"></span>OK</td>
+                  </tr>
+                  <tr>
+                    <td>2026-02-05 18:58</td><td>Цил.</td><td>Комбо</td><td>280 МПа</td><td>640</td><td>24 с</td>
+                    <td><span class="dot ok"></span>OK</td>
+                  </tr>
+                  <tr>
+                    <td>2026-02-05 18:40</td><td>Импорт</td><td>FEM</td><td>—</td><td>—</td><td>—</td>
+                    <td><span class="dot err"></span>Ошибка</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Right column -->
+          <aside class="card card-pad" aria-label="Сводка проекта">
+            <h2 class="card-title">О проекте</h2>
+
+            <div class="kv">
+              <div><p class="k">Проект</p><p class="v">Куб • неоднородность</p></div>
+              <div><p class="k">Режим</p><p class="v">Комбо: NN → FEM</p></div>
+              <div><p class="k">Решатель</p><p class="v">GMRES + AMG</p></div>
+              <div><p class="k">Куда считать</p><p class="v">Кластер (MPI, 8 процессов)</p></div>
+              <div><p class="k">Экспорт</p><p class="v">VTK • CSV • PDF-отчёт</p></div>
+            </div>
+
+            <div class="stats">
+              <div class="stat"><p class="k">Последний запуск</p><p class="v ok">Успешно</p></div>
+              <div class="stat"><p class="k">Очередь кластера</p><p class="v ok">Свободно</p></div>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const on = (sel, fn) => document.querySelector(sel)?.addEventListener("click", fn);
+
+    on("#btnNew",   () => { console.log("Новый расчёт");  alert("Новый расчёт"); });
+    on("#btnOpen",  () => { console.log("Открыть проект"); alert("Открыть проект"); });
+    on("#btnImport",() => { console.log("Импорт mesh");     alert("Импорт mesh"); });
+
+    document.querySelectorAll("[data-template]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const t = btn.getAttribute("data-template");
+        console.log("Выбран шаблон:", t);
+        alert("Выбран шаблон: " + t);
+      });
+    });
+
+    // document.querySelectorAll("[data-nav]").forEach(link => {
+    //   link.addEventListener("click", (e) => {
+    //     e.preventDefault();
+    //     const page = link.getAttribute("data-nav");
+    //     console.log("Навигация:", page);
+    //     alert("Навигация: " + page);
+    //   });
+    // });
+    // Modal functionality
+    const helpBtn = document.getElementById("helpBtn");
+    const helpModal = document.getElementById("helpModal");
+    const closeHelpBtn = document.getElementById("closeHelpBtn");
+
+    helpBtn.addEventListener("click", () => {
+      helpModal.style.display = "block"; // Show modal
+    });
+
+    closeHelpBtn.addEventListener("click", () => {
+      helpModal.style.display = "none"; // Close modal
+    });
+
+    // Close the modal if the user clicks outside of it
+    window.addEventListener("click", (event) => {
+      if (event.target === helpModal) {
+        helpModal.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>
